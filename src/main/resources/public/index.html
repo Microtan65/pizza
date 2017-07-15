@@ -1,0 +1,59 @@
+<html>
+<header>
+	<title>Pizzas</title>
+</header>
+<body>
+	<script>
+		function listPizzas() {
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET', 'http://localhost:8080/pizzas');
+			xhr.onreadystatechange = function(e) {
+				if (xhr.readyState == 4 && xhr.status == 200) {
+					var body = JSON.stringify(JSON.parse(xhr.response), null, 2);
+					// TODO iterate response object and output a pretty table
+					document.getElementById('pizzas').innerHTML = body;
+				}
+			}
+			xhr.send(null);
+		}
+
+		function createPizza() {
+			document.getElementById('createResult').innerHTML = "";
+			var xhr = new XMLHttpRequest();
+			xhr.open('POST', 'http://localhost:8080/pizzas');
+			xhr.setRequestHeader("Content-type", "application/json");
+			xhr.onreadystatechange = function(e) {
+				if (xhr.readyState == 4 && xhr.status == 201) {
+					document.getElementById('createResult').innerHTML = "Created a Pizza!";
+					document.getElementById('name').value = '';
+					document.getElementById('cost').value = '';
+					for (var i=1; i<5; i++) {
+						document.getElementById("topping" + i).value = '';
+					}
+				} else {
+					document.getElementById('createResult').innerHTML = "Oops, service returned HTTP " + xhr.status;
+				}
+			}
+			var pizza = {};
+			pizza.name = document.getElementById('name').value;
+			pizza.cost = document.getElementById('cost').value;
+			var ingredients = [];
+			// TODO add dynamic addition/removal of ingredients fields
+			for (var i=1; i<5; i++) {
+				var ingredient = document.getElementById("topping" + i).value;
+				if (ingredient.length > 0)
+					ingredients.push(ingredient);
+			}
+			pizza.ingredients = ingredients;
+			xhr.send(JSON.stringify(pizza));
+		}
+	</script>
+	<p>Name:<input type="text" id="name" name="name" value="">Cost (pence):<input type="text" id="cost" name="cost" value="">
+	Topping 1:<input type="text" id="topping1" name="topping1" value="">Topping 2:<input type="text" id="topping2" name="topping2" value="">
+	Topping 3:<input type="text" id="topping3" name="topping3" value="">Topping 4:<input type="text" id="topping4" name="topping4" value="">
+    <button onclick="createPizza();">Create Pizza</button>	<p id="createResult"></p>
+    </p>
+	<p><button onclick="listPizzas();">List Pizzas</button></p>
+	<pre id="pizzas"></pre>
+</body>
+</html>
