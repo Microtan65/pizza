@@ -22,6 +22,11 @@ pipeline {
                 sh "mvn dockerfile:push"
             }
         }
+        stage('k8s deploy') {
+            steps {
+                sh "kubectl apply -f k8s.yaml"
+            }
+        }
     }
     post { 
         always { 
