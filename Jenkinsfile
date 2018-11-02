@@ -8,17 +8,13 @@ pipeline {
             }
         }
         stage('Unit test') {
-            withMaven(maven: 'M354') {
-                steps {
-                   sh "mvn test"
-                }
+            steps {
+               sh "mvn test"
             }
         }
         stage('Maven install & Build Docker Image') {
-            withMaven(maven: 'M354') {
-                steps {
-                   sh "mvn install -DskipTests"
-               }
+            steps {
+               sh "mvn install -DskipTests"
             }
         }
         stage('Push Docker Image') {
@@ -34,6 +30,8 @@ pipeline {
     }
     post { 
         always { 
+            archive "target/**/*"
+            junit 'target/surefire-reports/*.xml'
             cleanWs()
         }
     }
