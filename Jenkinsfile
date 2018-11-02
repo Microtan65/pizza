@@ -2,9 +2,19 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('Compile') {
             steps {
-                sh "mvn install -DskipTests"
+                sh "mvn compile"
+            }
+        }
+        stage('Unit test') {
+            steps {
+                sh "mvn test"
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                sh "mvn install"
             }
         }
         stage('Push Docker Image') {
