@@ -9,12 +9,16 @@ pipeline {
         }
         stage('Unit test') {
             steps {
-                sh "mvn test"
+                withMaven {
+                   sh "mvn test"
+                }
             }
         }
         stage('Maven install & Build Docker Image') {
             steps {
-                sh "mvn install -DskipTests"
+                withMaven {
+                   sh "mvn install -DskipTests"
+               }
             }
         }
         stage('Push Docker Image') {
