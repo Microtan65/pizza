@@ -12,15 +12,20 @@ pipeline {
                 sh "mvn test"
             }
         }
-        stage('Build Docker Image') {
+        stage('Maven install & Build Docker Image') {
             steps {
-                sh "mvn install"
+                sh "mvn install -DskipTests"
             }
         }
         stage('Push Docker Image') {
             steps {
                 sh "mvn dockerfile:push"
             }
+        }
+    }
+    post { 
+        always { 
+            cleanWs()
         }
     }
 }
